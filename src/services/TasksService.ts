@@ -35,7 +35,7 @@ export class TasksService {
     taskId: number,
     title: string,
     description: string,
-    due_date: Date | null,
+    due_date: string | null,
   ) {
     await this.tasksRepository.updateTask(taskId, title, description, due_date);
   }

@@ -56,13 +56,11 @@ export class TasksController {
       const { task_id } = req.params;
       const { title, description, due_date } = req.body;
 
-      const parsedDueDate = due_date ? new Date(due_date) : null;
-
       const task = await this.tasksService.updateTask(
         Number(task_id),
         title,
         description,
-        parsedDueDate,
+        due_date ?? null,
       );
 
       res.json(task);

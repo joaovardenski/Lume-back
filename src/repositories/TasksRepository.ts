@@ -60,7 +60,7 @@ export class TasksRepository {
     taskId: number,
     title: string,
     description: string,
-    due_date: Date | null,
+    due_date: string | null,
   ): Promise<void> {
     const query = `
             UPDATE tasks
