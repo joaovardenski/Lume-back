@@ -30,14 +30,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # =========================
-# DATABASE
-# =========================
-*.sqlite
-*.sqlite3
-*.db
-*.sql
-
-# =========================
 # UPLOADS / FILES
 # =========================
 uploads/
