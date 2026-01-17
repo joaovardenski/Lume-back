@@ -14,13 +14,25 @@ export interface Task {
 }
 
 export class TasksRepository {
-  async createTask(user_id: number, title: string) {
+  async createTask(
+    user_id: number,
+    title: string,
+    important: boolean,
+    due_date: Date | null,
+  ): Promise<Task> {
     const query = `
-            INSERT INTO tasks (user_id, title)
-            VALUES ($1, $2)
-            RETURNING *
-        `;
-    const result = await pool.query(query, [user_id, title]);
+    INSERT INTO tasks (user_id, title, important, due_date)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+  `;
+
+    const result = await pool.query(query, [
+      user_id,
+      title,
+      important,
+      due_date,
+    ]);
+
     return result.rows[0];
   }
 

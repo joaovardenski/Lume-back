@@ -7,7 +7,12 @@ export class TasksService {
     this.tasksRepository = new TasksRepository();
   }
 
-  async createTask(user_id: number, title: string) {
+  async createTask(
+    user_id: number,
+    title: string,
+    importantFlag: boolean,
+    dateFlag: boolean,
+  ) {
     if (!title) {
       throw new Error("Title is required");
     }
@@ -16,7 +21,14 @@ export class TasksService {
       throw new Error("Title must be between 3 and 100 characters");
     }
 
-    return await this.tasksRepository.createTask(user_id, title);
+    const due_date = dateFlag ? new Date() : null;
+
+    return await this.tasksRepository.createTask(
+      user_id,
+      title,
+      importantFlag,
+      due_date,
+    );
   }
 
   async getTasks(user_id: number) {

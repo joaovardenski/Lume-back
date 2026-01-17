@@ -1,6 +1,10 @@
 import { CorsOptions } from "cors";
 
-const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173", "https://lume-front.vercel.app"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://lume-front.vercel.app",
+];
 
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
