@@ -49,6 +49,7 @@ Este é o motor da aplicação **Lume**. Uma API robusta construída para fornec
 src/
 ├── config/       # Configurações de Cors e banco
 ├── controllers/  # Lógica de controle das rotas
+├── database/     # Estrutura do banco de dados
 ├── middlewares/  # Validadores e proteção de rotas (Auth)
 ├── repositories/ # Lógica de querys para o banco
 ├── routes/       # Definição dos endpoints da API
