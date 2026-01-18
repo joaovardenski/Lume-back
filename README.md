@@ -10,6 +10,7 @@
 ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
 ![PostgreSQL](https://img.shields.io/badge/postgresql-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![Docker](https://img.shields.io/badge/docker-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 </div>
 
@@ -40,6 +41,7 @@ Este é o motor da aplicação **Lume**. Uma API robusta construída para fornec
 - **Banco de Dados:** [PostgreSQL](https://www.postgresql.org/)
 - **Segurança:** [Bcrypt](https://www.npmjs.com/package/bcrypt) para hashing de senhas.
 - **Linguagem:** TypeScript para tipagem e melhor manutenção.
+- **Containerização:** Docker & Docker Compose.
 
 ---
 
@@ -75,45 +77,28 @@ src/
 
 ## ⚙️ Como Rodar o Projeto
 
-### Pré-requisitos
-- Node.js e NPM instalados.
-- Instância de PostgreSQL rodando (Local ou Docker).
-
-### Passo a passo 1 (usando no servidor)
+### Executando no navegador
 
 #### Siga o link para o projeto rodando no servidor
 ```text
 https://lume-front.vercel.app/
 ```
 
-### Passo a passo 2 (modo desenvolvedor)
+### 🐳 Executando com Docker
 
-#### Clone o repositório
-```text
+#### Pré-requisitos
+- Docker
+- Docker Compose
+
+Este projeto é totalmente containerizado. Com apenas um comando, a API e o banco de dados sobem prontos para uso.
+
+### Passos
+
+```bash
 git clone https://github.com/joaovardenski/Lume-back.git
 cd Lume-back
-```
-
-#### Instale as dependências
-```text
-npm install
-```
-
-#### Variáveis de Ambiente: Crie um arquivo .env seguindo o modelo .env.example:
-```text
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=yourpassword
-DB_NAME=lume_db
-
-JWT_SECRET=yourkey
-JWT_EXPIRES_IN=1d
-```
-
-#### Inicie o servidor de desenvolvimento
-```text
-npm run dev
+cp .env.example .env
+docker compose up --build
 ```
 
 ---
