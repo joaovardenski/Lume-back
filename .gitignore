@@ -65,7 +65,6 @@ pids/
 # =========================
 # DOCKER
 # =========================
-.dockerignore
 docker-compose.override.yml
 
 # =========================
