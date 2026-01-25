@@ -14,7 +14,6 @@ CREATE TABLE tasks (
   description TEXT,
   due_date DATE,
   important BOOLEAN DEFAULT false,
-  completed BOOLEAN DEFAULT false,
   completed_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()

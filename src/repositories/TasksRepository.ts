@@ -5,7 +5,6 @@ export interface Task {
   user_id: number;
   title: string;
   description: string;
-  completed: boolean;
   important: boolean;
   due_date: Date | null;
   completed_at: Date | null;
@@ -50,13 +49,17 @@ export class TasksRepository {
 
   async toggleCompletedTask(taskId: number): Promise<void> {
     const query = `
-            UPDATE tasks
-            SET completed = NOT completed, completed_at = CASE WHEN NOT completed THEN NOW() ELSE NULL END
-            WHERE id = $1
-        `;
+      UPDATE tasks
+      SET completed_at = CASE
+        WHEN completed_at IS NULL THEN NOW()
+        ELSE NULL
+      END
+      WHERE id = $1
+    `;
 
     await pool.query(query, [taskId]);
   }
+
 
   async toggleImportantTask(taskId: number): Promise<void> {
     const query = `
