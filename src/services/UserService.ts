@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { MailService } from "./MailService";
 import { UserRepository } from "../repositories/UserRepository";
+import { passwordRecoveryEmailTemplate } from "../utils/MailUtils";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -91,11 +92,7 @@ export class UserService {
      await this.mailService.send({
       to: user.email,
       subject: "Lume Password recovery",
-      html: `
-        <p>Click the link below to reset your password:</p>
-        <a href="${resetLink}">Reset password</a>
-        <p>This link expires in 15 minutes.</p>
-      `,
+      html: passwordRecoveryEmailTemplate(user.name, resetLink),
     });
   }
 
