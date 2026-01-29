@@ -99,7 +99,7 @@ export class UserService {
     });
   }
 
-  async resetPassword(token: string, newPassword: string) {
+  async resetPassword(token: string | null, newPassword: string) {
     if (!token || !newPassword) throw new Error("Invalid request");
 
     const user = await this.userRepository.findByValidResetToken(token);
