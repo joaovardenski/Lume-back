@@ -61,4 +61,27 @@ export class UserRepository {
 
     return result.rows[0];
   }
+
+  async invalidatePreviousTokens(userId: number): Promise<void> {
+    const query = `
+      UPDATE password_resets
+      SET valid = FALSE
+      WHERE user_id = $1 AND valid = TRUE
+    `;
+
+    await pool.query(query, [userId]);
+  }
+
+  async storePasswordResetToken(
+    userId: number,
+    token: string,
+    expiresAt: Date,
+  ): Promise<void> {
+    const query = `
+      INSERT INTO password_resets (user_id, token, expires_at, valid)
+      VALUES ($1, $2, $3, TRUE)
+    `;
+
+    await pool.query(query, [userId, token, expiresAt]);
+  }
 }

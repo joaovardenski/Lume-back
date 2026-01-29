@@ -56,6 +56,22 @@ export class UserController {
     return res.status(204).send();
   }
 
+  async createRecoverToken(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      await this.userService.createRecoverToken(email);
+
+      return res.status(200).json({
+        message: "If this email exists, a recovery link was sent.",
+      });
+    } catch (error) {
+      return res.status(200).json({
+        message: "If this email exists, a recovery link was sent.",
+      });
+    }
+  }
+
   async me(req: Request, res: Response) {
     try {
       const userId = req.userId;

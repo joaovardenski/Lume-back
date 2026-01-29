@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { MailService } from "./MailService";
 import { UserRepository } from "../repositories/UserRepository";
 import dotenv from "dotenv";
 
@@ -7,9 +9,11 @@ dotenv.config();
 
 export class UserService {
   private userRepository: UserRepository;
+  private mailService: MailService;
 
   constructor() {
     this.userRepository = new UserRepository();
+    this.mailService = new MailService();
   }
 
   async register(name: string, email: string, password: string) {
@@ -62,6 +66,37 @@ export class UserService {
     const { password: _, ...userWithoutPassword } = user;
 
     return { user: userWithoutPassword, token };
+  }
+
+  async createRecoverToken(email: string) {
+    if (!email) {
+      throw new Error("Email is required");
+    }
+
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) return
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 15); // 15 min
+
+    await this.userRepository.invalidatePreviousTokens(user.id);
+    await this.userRepository.storePasswordResetToken(
+      user.id,
+      token,
+      expiresAt,
+    );
+
+    const resetLink = `${process.env.FRONT_URL}/recover-password?token=${token}`;
+
+     await this.mailService.send({
+      to: user.email,
+      subject: "Lume Password recovery",
+      html: `
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetLink}">Reset password</a>
+        <p>This link expires in 15 minutes.</p>
+      `,
+    });
   }
 
   async getMe(userId: number) {
