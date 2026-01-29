@@ -99,6 +99,19 @@ export class UserService {
     });
   }
 
+  async resetPassword(token: string, newPassword: string) {
+    if (!token || !newPassword) throw new Error("Invalid request");
+
+    const user = await this.userRepository.findByValidResetToken(token);
+    if (!user) throw new Error("Invalid or expired token");
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    await this.userRepository.updatePassword(user.id, hashedPassword);
+    await this.userRepository.invalidatePreviousTokens(user.id);
+  }
+
   async getMe(userId: number) {
     const user = await this.userRepository.findById(userId);
 

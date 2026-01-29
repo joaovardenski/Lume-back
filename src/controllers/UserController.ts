@@ -72,6 +72,22 @@ export class UserController {
     }
   }
 
+  async resetPassword(req: Request, res: Response) {
+    try {
+      const { token, newPassword } = req.body;
+
+      await this.userService.resetPassword(token, newPassword);
+
+      return res.status(200).json({
+        message: "Password reset successfully",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: getErrorMessage(error),
+      });
+    }
+  }
+
   async me(req: Request, res: Response) {
     try {
       const userId = req.userId;

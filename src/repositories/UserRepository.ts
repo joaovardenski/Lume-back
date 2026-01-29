@@ -9,6 +9,11 @@ export interface User {
   updated_at: Date;
 }
 
+interface PasswordResetInfo {
+  id: number;
+  reset_token_expires_at: Date;
+}
+
 export class UserRepository {
   async createUser(userData: {
     name: string;
@@ -62,6 +67,23 @@ export class UserRepository {
     return result.rows[0];
   }
 
+  async findByValidResetToken(token: string): Promise<PasswordResetInfo | null> {
+    const query = `
+      SELECT u.id, pr.expires_at as reset_token_expires_at
+      FROM users u
+      JOIN password_resets pr ON u.id = pr.user_id
+      WHERE pr.token = $1 AND pr.expires_at > NOW() AND pr.valid = TRUE
+    `;
+
+    const result = await pool.query(query, [token]);
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0];
+  }
+
   async invalidatePreviousTokens(userId: number): Promise<void> {
     const query = `
       UPDATE password_resets
@@ -83,5 +105,15 @@ export class UserRepository {
     `;
 
     await pool.query(query, [userId, token, expiresAt]);
+  }
+
+  async updatePassword(userId: number, newPassword: string): Promise<void> {
+    const query = `
+      UPDATE users
+      SET password = $1, updated_at = NOW()
+      WHERE id = $2
+    `;
+
+    await pool.query(query, [newPassword, userId]);
   }
 }
