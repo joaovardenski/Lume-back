@@ -7,6 +7,13 @@ export class TasksController {
 
   constructor() {
     this.tasksService = new TasksService();
+
+    this.createTask = this.createTask.bind(this);
+    this.getTasks = this.getTasks.bind(this);
+    this.toggleCompletedTask = this.toggleCompletedTask.bind(this);
+    this.toggleImportantTask = this.toggleImportantTask.bind(this);
+    this.updateTask = this.updateTask.bind(this);
+    this.deleteTask = this.deleteTask.bind(this);
   }
 
   async createTask(req: Request, res: Response) {

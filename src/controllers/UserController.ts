@@ -7,6 +7,12 @@ export class UserController {
 
   constructor() {
     this.userService = new UserService();
+    this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
+    this.createRecoverToken = this.createRecoverToken.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
+    this.me = this.me.bind(this);
   }
 
   async register(req: Request, res: Response) {

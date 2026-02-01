@@ -5,12 +5,12 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 const router = Router();
 const userController = new UserController();
 
-router.post("/register", (req, res) => userController.register(req, res));
-router.post("/login", (req, res) => userController.login(req, res));
-router.post("/logout", (req, res) => userController.logout(req, res));
-router.post("/forgot-password", (req, res) => userController.createRecoverToken(req, res));
-router.post("/reset-password", (req, res) => userController.resetPassword(req, res));
+router.post("/register", userController.register);
+router.post("/login", userController.login);
+router.post("/logout", userController.logout);
+router.post("/forgot-password", userController.createRecoverToken);
+router.post("/reset-password", userController.resetPassword);
 
-router.get("/me", authMiddleware, (req, res) => userController.me(req, res));
+router.get("/me", authMiddleware, userController.me);
 
 export default router;
