@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
-import { getErrorMessage } from "../utils/ErrorMessage";
 
 export class UserController {
   private userService: UserService;
 
   constructor() {
     this.userService = new UserService();
+
     this.register = this.register.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -16,101 +16,64 @@ export class UserController {
   }
 
   async register(req: Request, res: Response) {
-    try {
-      const { name, email, password } = req.body;
+    const { name, email, password } = req.body;
 
-      const user = await this.userService.register(name, email, password);
+    const user = await this.userService.register(name, email, password);
 
-      return res.status(201).json(user);
-    } catch (error) {
-      return res.status(400).json({
-        error: getErrorMessage(error),
-      });
-    }
+    return res.status(201).json(user);
   }
 
   async login(req: Request, res: Response) {
-    try {
-      const { email, password } = req.body;
+    const { email, password } = req.body;
 
-      const { user, token } = await this.userService.login(email, password);
+    const { user, token } = await this.userService.login(email, password);
 
-      res.cookie("access_token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 1000 * 60 * 60 * 24 * 30,
-      });
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+    });
 
-      return res.status(200).json({
-        user,
-      });
-    } catch (error) {
-      return res.status(400).json({
-        error: getErrorMessage(error),
-      });
-    }
+    return res.status(200).json({ user });
   }
 
   async logout(req: Request, res: Response) {
     res.clearCookie("access_token", {
       httpOnly: true,
-      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
     });
 
     return res.status(204).send();
   }
 
   async createRecoverToken(req: Request, res: Response) {
-    try {
-      const { email } = req.body;
+    const { email } = req.body;
 
-      await this.userService.createRecoverToken(email);
+    // Segurança: nunca revela se o email existe
+    await this.userService.createRecoverToken(email);
 
-      return res.status(200).json({
-        message: "If this email exists, a recovery link was sent.",
-      });
-    } catch (error) {
-      return res.status(200).json({
-        message: "If this email exists, a recovery link was sent.",
-      });
-    }
+    return res.status(200).json({
+      message: "If this email exists, a recovery link was sent.",
+    });
   }
 
   async resetPassword(req: Request, res: Response) {
-    try {
-      const { token, newPassword } = req.body;
+    const { token, newPassword } = req.body;
 
-      await this.userService.resetPassword(token, newPassword);
+    await this.userService.resetPassword(token, newPassword);
 
-      return res.status(200).json({
-        message: "Password reset successfully",
-      });
-    } catch (error) {
-      return res.status(400).json({
-        error: getErrorMessage(error),
-      });
-    }
+    return res.status(200).json({
+      message: "Password reset successfully",
+    });
   }
 
   async me(req: Request, res: Response) {
-    try {
-      const userId = req.userId;
+    const userId = req.userId;
 
-      if (!userId) {
-        return res.status(401).json({
-          error: "User not authenticated",
-        });
-      }
+    const user = await this.userService.getMe(userId);
 
-      const user = await this.userService.getMe(userId);
-
-      return res.status(200).json(user);
-    } catch (error) {
-      return res.status(401).json({
-        error: getErrorMessage(error),
-      });
-    }
+    return res.status(200).json(user);
   }
 }

@@ -51,7 +51,8 @@ export class UserRepository {
     return result.rows[0];
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: number | undefined): Promise<User | null> {
+    if (id === undefined) return null;
     const query = `
     SELECT *
     FROM users

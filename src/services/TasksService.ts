@@ -1,4 +1,5 @@
 import { TasksRepository } from "../repositories/TasksRepository";
+import { AppError } from "../errors/AppError";
 
 export class TasksService {
   private tasksRepository: TasksRepository;
@@ -8,51 +9,87 @@ export class TasksService {
   }
 
   async createTask(
-    user_id: number,
+    userId: number,
     title: string,
-    importantFlag: boolean,
-    dateFlag: boolean,
+    important: boolean,
+    hasDate: boolean,
   ) {
+    if (!userId) {
+      throw new AppError("User not authenticated", 401);
+    }
+
     if (!title) {
-      throw new Error("Title is required");
+      throw new AppError("Title is required", 400);
     }
 
     if (title.length < 3 || title.length > 100) {
-      throw new Error("Title must be between 3 and 100 characters");
+      throw new AppError(
+        "Title must be between 3 and 100 characters",
+        400,
+      );
     }
 
-    const due_date = dateFlag ? new Date() : null;
+    const dueDate = hasDate ? new Date() : null;
 
     return await this.tasksRepository.createTask(
-      user_id,
+      userId,
       title,
-      importantFlag,
-      due_date,
+      important,
+      dueDate,
     );
   }
 
-  async getTasks(user_id: number) {
-    return await this.tasksRepository.getTasks(user_id);
+  async getTasks(userId: number) {
+    if (!userId) {
+      throw new AppError("User not authenticated", 401);
+    }
+
+    return await this.tasksRepository.getTasks(userId);
   }
 
   async toggleCompletedTask(taskId: number) {
-    await this.tasksRepository.toggleCompletedTask(taskId);
+    if (!taskId || isNaN(taskId)) {
+      throw new AppError("Invalid task id", 400);
+    }
+
+    const updated = await this.tasksRepository.toggleCompletedTask(taskId);
   }
 
   async toggleImportantTask(taskId: number) {
-    await this.tasksRepository.toggleImportantTask(taskId);
+    if (!taskId || isNaN(taskId)) {
+      throw new AppError("Invalid task id", 400);
+    }
+
+    const updated = await this.tasksRepository.toggleImportantTask(taskId);
   }
 
   async updateTask(
     taskId: number,
     title: string,
     description: string,
-    due_date: string | null,
+    dueDate: string | null,
   ) {
-    await this.tasksRepository.updateTask(taskId, title, description, due_date);
+    if (!taskId || isNaN(taskId)) {
+      throw new AppError("Invalid task id", 400);
+    }
+
+    if (!title || title.length < 3) {
+      throw new AppError("Title must be at least 3 characters", 400);
+    }
+
+    const updatedTask = await this.tasksRepository.updateTask(
+      taskId,
+      title,
+      description,
+      dueDate,
+    );
   }
 
   async deleteTask(taskId: number) {
-    await this.tasksRepository.deleteTask(taskId);
+    if (!taskId || isNaN(taskId)) {
+      throw new AppError("Invalid task id", 400);
+    }
+
+    const deleted = await this.tasksRepository.deleteTask(taskId);
   }
 }

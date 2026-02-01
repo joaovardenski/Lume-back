@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { TasksService } from "../services/TasksService";
-import { getErrorMessage } from "../utils/ErrorMessage";
 
 export class TasksController {
   private tasksService: TasksService;
@@ -17,79 +16,67 @@ export class TasksController {
   }
 
   async createTask(req: Request, res: Response) {
-    try {
-      const user_id = req.userId!;
-      const { title, important, date } = req.body;
+    const userId = req.userId!;
+    const { title, important, date } = req.body;
 
-      const task = await this.tasksService.createTask(
-        user_id,
-        title,
-        Boolean(important),
-        Boolean(date),
-      );
+    const task = await this.tasksService.createTask(
+      userId,
+      title,
+      Boolean(important),
+      Boolean(date),
+    );
 
-      res.status(201).json(task);
-    } catch (error) {
-      res.status(400).json({ error: getErrorMessage(error) });
-    }
+    return res.status(201).json(task);
   }
 
   async getTasks(req: Request, res: Response) {
-    try {
-      const user_id = req.userId!;
+    const userId = req.userId!;
 
-      const tasks = await this.tasksService.getTasks(user_id);
-      res.json(tasks);
-    } catch (error) {
-      res.status(404).json({ error: getErrorMessage(error) });
-    }
+    const tasks = await this.tasksService.getTasks(userId);
+    return res.status(200).json(tasks);
   }
 
   async toggleCompletedTask(req: Request, res: Response) {
-    try {
-      const { task_id } = req.params;
-      await this.tasksService.toggleCompletedTask(parseInt(task_id));
-      res.json({ message: "Task completed status toggled successfully" });
-    } catch (error) {
-      res.status(404).json({ error: getErrorMessage(error) });
-    }
+    const taskId = Number(req.params.task_id);
+
+    await this.tasksService.toggleCompletedTask(taskId);
+
+    return res.status(200).json({
+      message: "Task completed status toggled successfully",
+    });
   }
 
   async toggleImportantTask(req: Request, res: Response) {
-    try {
-      const { task_id } = req.params;
-      await this.tasksService.toggleImportantTask(parseInt(task_id));
-      res.json({ message: "Task important status toggled successfully" });
-    } catch (error) {
-      res.status(404).json({ error: getErrorMessage(error) });
-    }
+    const taskId = Number(req.params.task_id);
+
+    await this.tasksService.toggleImportantTask(taskId);
+
+    return res.status(200).json({
+      message: "Task important status toggled successfully",
+    });
   }
 
   async updateTask(req: Request, res: Response) {
-    try {
-      const { task_id } = req.params;
-      const { title, description, due_date } = req.body;
+    const taskId = Number(req.params.task_id);
+    const { title, description, due_date } = req.body;
 
-      const task = await this.tasksService.updateTask(
-        Number(task_id),
-        title,
-        description,
-        due_date ?? null,
-      );
+    const task = await this.tasksService.updateTask(
+      taskId,
+      title,
+      description,
+      due_date ?? null,
+    );
 
-      res.json(task);
-    } catch (error) {
-      res.status(400).json({ error: getErrorMessage(error) });
-    }
+    return res.status(200).json(task);
   }
 
   async deleteTask(req: Request, res: Response) {
-    try {
-      const { task_id } = req.params;
-      await this.tasksService.deleteTask(parseInt(task_id));
-      res.json({ message: "Task deleted successfully" });
-    } catch (error) {
-      res.status(404).json({ error: getErrorMessage(error) });
-    }
+    const taskId = Number(req.params.task_id);
+
+    await this.tasksService.deleteTask(taskId);
+
+    return res.status(200).json({
+      message: "Task deleted successfully",
+    });
   }
 }

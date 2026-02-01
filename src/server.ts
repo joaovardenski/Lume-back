@@ -5,6 +5,7 @@ import { corsOptions } from "./config/cors";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes";
 import tasksRoutes from "./routes/tasksRoutes";
+import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
 
@@ -14,16 +15,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-  res.json({
-    status: 'ok',
-    service: 'Lume API',
-    timestamp: new Date(),
-  });
-});
-
 app.use("/api", userRoutes);
 app.use("/api", tasksRoutes);
+
+app.use(errorHandler);
 
 const PORT = Number(process.env.PORT) || 3000;
 
