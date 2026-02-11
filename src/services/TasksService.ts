@@ -22,9 +22,9 @@ export class TasksService {
       throw new AppError("Title is required", 400);
     }
 
-    if (title.length < 3 || title.length > 100) {
+    if (title.length < 3 || title.length > 150) {
       throw new AppError(
-        "Title must be between 3 and 100 characters",
+        "Title must be between 3 and 150 characters",
         400,
       );
     }
@@ -73,8 +73,8 @@ export class TasksService {
       throw new AppError("Invalid task id", 400);
     }
 
-    if (!title || title.length < 3) {
-      throw new AppError("Title must be at least 3 characters", 400);
+    if (!title || title.length < 3 || title.length > 150) {
+      throw new AppError("Title must be between 3 and 150 characters", 400);
     }
 
     const updatedTask = await this.tasksRepository.updateTask(

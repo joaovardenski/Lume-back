@@ -14,7 +14,7 @@ CREATE TABLE tasks (
   id BIGSERIAL PRIMARY KEY,
   user_id BIGINT NOT NULL,
   title VARCHAR(150) NOT NULL,
-  description VARCHAR(1000),
+  description VARCHAR(500),
   due_date DATE,
   important BOOLEAN NOT NULL DEFAULT FALSE,
   completed_at TIMESTAMP WITH TIME ZONE,
