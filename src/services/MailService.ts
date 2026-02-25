@@ -3,8 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 interface SendMailDTO {
   to: string;
   subject: string;
@@ -12,8 +10,14 @@ interface SendMailDTO {
 }
 
 export class MailService {
+  private resend: Resend;
+
+  constructor() {
+    this.resend = new Resend(process.env.RESEND_API_KEY);
+  }
+
   async send({ to, subject, html }: SendMailDTO) {
-    await resend.emails.send({
+    await this.resend.emails.send({
       from: process.env.MAIL_FROM as string,
       to,
       subject,
